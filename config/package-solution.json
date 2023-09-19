@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "page-hacks-client-side-solution",
+    "id": "58b60525-c421-4b43-aefa-db7d7b93e509",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.16.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "page-hacks description"
+      },
+      "longDescription": {
+        "default": "page-hacks description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "page-hacks Feature",
+        "description": "The feature that activates elements of the page-hacks solution.",
+        "id": "06c2ba61-6dcb-4443-a458-9c45d11ccc30",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/page-hacks.sppkg"
+  }
+}
