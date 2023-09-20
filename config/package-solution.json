@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "page-hacks-client-side-solution",
+    "name": "Page Hacks",
     "id": "58b60525-c421-4b43-aefa-db7d7b93e509",
-    "version": "1.0.0.0",
+    "version": "0.0.1.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -27,10 +27,10 @@
     },
     "features": [
       {
-        "title": "page-hacks Feature",
+        "title": "Page Hacks App Feature",
         "description": "The feature that activates elements of the page-hacks solution.",
         "id": "06c2ba61-6dcb-4443-a458-9c45d11ccc30",
-        "version": "1.0.0.0"
+        "version": "0.0.1.0"
       }
     ]
   },
