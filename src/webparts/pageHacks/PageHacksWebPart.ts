@@ -95,7 +95,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
   }
 
   // Updates the page navigation visibility
-  private updatePageNavigation(hideNav: boolean) {
+  private updatePageNavigation(hideNav: boolean): void {
     // Get the navigation element
     const elNav: HTMLElement = document.querySelector("#spLeftNav");
     if (elNav) {
