@@ -145,9 +145,6 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
                   },
                   {
                     label: "Home"
-                  },
-                  {
-                    label: "SingleWebPartAppPage"
                   }
                 ],
                 onValidate: (ctrl, results) => {
