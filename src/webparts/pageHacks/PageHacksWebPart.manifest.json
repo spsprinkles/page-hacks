@@ -20,7 +20,7 @@
     "group": { "default": "Advanced" },
     "title": { "default": "PageHacks" },
     "description": { "default": "PageHacks description" },
-    "officeFabricIconFontName": "Page",
+    "officeFabricIconFontName": "PageEdit",
     "properties": {
       "description": "PageHacks"
     }
