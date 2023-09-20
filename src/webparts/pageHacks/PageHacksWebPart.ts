@@ -240,13 +240,21 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     // Get the canvas zone element
     const elCanvas = document.querySelector(".CanvasZone.row");
     if (elCanvas) {
+      const elCanvasChild = elCanvas.firstChild as HTMLElement;
+
       // See if we are setting the full width
       if (setFullWidth) {
         elCanvas.classList.add("CanvasZone--fullWidth");
         elCanvas.classList.add("CanvasZone--fullWidth--read");
+
+        // Set the max-width
+        elCanvasChild.style.maxWidth = "none";
       } else {
         elCanvas.classList.remove("CanvasZone--fullWidth");
         elCanvas.classList.remove("CanvasZone--fullWidth--read");
+
+        // Clear the max-width
+        elCanvasChild.style.maxWidth = "";
       }
     }
   }
