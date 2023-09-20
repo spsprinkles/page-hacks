@@ -238,7 +238,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
   // Updates the page width
   private updatePageWidth(setFullWidth: boolean): void {
     // Get the canvas zone element
-    const elCanvas = document.querySelector(".CanvasZone.row");
+    const elCanvas = document.querySelector("data-automation-id['CanvasZone']");
     if (elCanvas) {
       const elCanvasChild = elCanvas.firstChild as HTMLElement;
 
