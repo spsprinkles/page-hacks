@@ -1,9 +1,5 @@
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
-import {
-  IPropertyPaneConfiguration,
-  PropertyPaneButton,
-  PropertyPaneToggle
-} from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'PageHacksWebPartStrings';

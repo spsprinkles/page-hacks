@@ -2,12 +2,12 @@
   "@microsoft/generator-sharepoint": {
     "plusBeta": false,
     "isCreatingSolution": true,
-    "nodeVersion": "14.21.2",
+    "nodeVersion": "18.19.0",
     "sdksVersions": {
       "@microsoft/microsoft-graph-client": "3.0.2",
-      "@microsoft/teams-js": "2.4.1"
+      "@microsoft/teams-js": "2.9.1"
     },
-    "version": "1.16.1",
+    "version": "1.18.2",
     "libraryName": "page-hacks",
     "libraryId": "58b60525-c421-4b43-aefa-db7d7b93e509",
     "environment": "spo",
