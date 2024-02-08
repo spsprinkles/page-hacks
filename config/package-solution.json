@@ -7,6 +7,7 @@
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
+    "iconPath": "images/AppIcon.png",
     "developer": {
       "name": "",
       "websiteUrl": "",
@@ -16,10 +17,10 @@
     },
     "metadata": {
       "shortDescription": {
-        "default": "Allows you to modify a modern page."
+        "default": "Allows you to modify the layout of a modern page."
       },
       "longDescription": {
-        "default": "Allows you to modify a modern page."
+        "default": "Allows you to modify the layout of a modern page."
       },
       "screenshotPaths": [],
       "videoUrl": "",
