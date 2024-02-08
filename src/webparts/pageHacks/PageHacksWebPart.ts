@@ -1,7 +1,8 @@
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-
+//import styles from './PageHacksWebPart.module.scss';
+import * as common from './common';
 import * as strings from 'PageHacksWebPartStrings';
 
 import { LoadingDialog, Modal } from "dattatable";
@@ -30,9 +31,11 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     // Display a button to configure the page
     Components.Tooltip({
       el: this.domElement,
-      content: "Click to configure this page",
+      content: "Setup this page",
       btnProps: {
-        text: "Configure",
+        className: "p-1 pe-2",
+        iconType: common.getLogo(24, 24, "me-2"),
+        text: "Setup",
         type: Components.ButtonTypes.OutlinePrimary,
         onClick: () => {
           // Show the edit panel
