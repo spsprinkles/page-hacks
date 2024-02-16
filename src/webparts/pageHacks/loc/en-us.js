@@ -1,12 +1,12 @@
 define([], function () {
   return {
     "PropertyPaneDescription": "Select the options below to modify the page.",
-    "PageNavigationFieldDescription": "Enable this option to hide the page navigation.",
+    "PageHeaderFieldLabel": "Page Header",
     "PageNavigationFieldLabel": "Page Navigation",
+    "PagePaddingFieldLabel": "Canvas Control Padding",
     "PageTypeFieldDescription": "This will allow you to change the page layout type.",
     "PageTypeFieldLabel": "Page Template",
-    "PageWidthFieldDescription": "This will set the canvas zone to full width.",
-    "PageWidthFieldLabel": "Page Width",
+    "PageWidthFieldLabel": "Canvas Zone Width",
     "AppLocalEnvironmentSharePoint": "The app is running on your local environment as SharePoint web part",
     "AppLocalEnvironmentTeams": "The app is running on your local environment as Microsoft Teams app",
     "AppLocalEnvironmentOffice": "The app is running on your local environment in office.com",

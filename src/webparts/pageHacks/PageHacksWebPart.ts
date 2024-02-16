@@ -1,23 +1,31 @@
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
-import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneToggle } from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneHorizontalRule, PropertyPaneLink, PropertyPaneLabel, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-//import styles from './PageHacksWebPart.module.scss';
 import * as common from './common';
 import * as strings from 'PageHacksWebPartStrings';
+import './PageHacksWebPart.module.scss';
 
 import { LoadingDialog, Modal } from "dattatable";
 import { Components, ContextInfo, Web } from "gd-sprest-bs";
 
 export interface IPageHacksWebPartProps {
+  hideHeader: boolean;
   hideNav: boolean;
+  hidePadding: boolean;
   isFullWidth: boolean;
 }
 
 export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWebPartProps> {
 
   public render(): void {
+    // Update the page header
+    this.updatePageHeader(this.properties.hideHeader);
+
     // Update the page navigation
     this.updatePageNavigation(this.properties.hideNav);
+
+    // Update the page padding
+    this.updatePadding(this.properties.hidePadding);
 
     // Update the page width
     this.updatePageWidth(this.properties.isFullWidth);
@@ -31,11 +39,11 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     // Display a button to configure the page
     Components.Tooltip({
       el: this.domElement,
-      content: "Setup this page",
+      content: "Configure Settings",
       btnProps: {
         className: "p-1 pe-2",
         iconType: common.getLogo(24, 24, "me-2"),
-        text: "Setup",
+        text: "Settings",
         type: Components.ButtonTypes.OutlinePrimary,
         onClick: () => {
           // Show the edit panel
@@ -46,38 +54,38 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
   }
 
   protected get dataVersion(): Version {
-    return Version.parse('0.1');
-  }
-
-  protected onInit(): Promise<void> {
-    // Set the context
-    ContextInfo.setPageContext(this.context.pageContext);
-
-    // Return a promise
-    return Promise.resolve();
+    return Version.parse(this.context.manifest.version);
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
         {
-          header: {
-            description: strings.PropertyPaneDescription
-          },
           groups: [
             {
+              groupName: "Settings:",
               groupFields: [
-                PropertyPaneToggle("hideNav", {
-                  label: strings.PageNavigationFieldLabel,
-                  offText: strings.PageNavigationFieldDescription,
-                  onText: strings.PageNavigationFieldDescription
+                PropertyPaneToggle('hidePadding', {
+                  label: strings.PagePaddingFieldLabel,
+                  offText: "Standard Padding",
+                  onText: "Hide Padding"
                 }),
-                PropertyPaneToggle("isFullWidth", {
+                PropertyPaneToggle('isFullWidth', {
                   label: strings.PageWidthFieldLabel,
-                  offText: strings.PageWidthFieldDescription,
-                  onText: strings.PageWidthFieldDescription
+                  offText: "Standard Width",
+                  onText: "Full Page Width"
                 }),
-                PropertyPaneButton("", {
+                PropertyPaneToggle('hideHeader', {
+                  label: strings.PageHeaderFieldLabel,
+                  offText: "Show Page Header",
+                  onText: "Hide Page Header"
+                }),
+                PropertyPaneToggle('hideNav', {
+                  label: strings.PageNavigationFieldLabel,
+                  offText: "Show Page Navigation",
+                  onText: "Hide Page Navigation"
+                }),
+                PropertyPaneButton('', {
                   description: strings.PageTypeFieldDescription,
                   text: strings.PageTypeFieldLabel,
                   onClick: () => {
@@ -88,19 +96,105 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
               ]
             }
           ]
+        },
+        {
+          groups: [
+            {
+              groupName: "About this app:",
+              groupFields: [
+                PropertyPaneLabel('version', {
+                  text: "Version: " + this.context.manifest.version
+                }),
+                PropertyPaneLabel('description', {
+                  text: strings.PropertyPaneDescription
+                }),
+                PropertyPaneLabel('about', {
+                  text: "We think adding sprinkles to a donut just makes it better! SharePoint Sprinkles builds apps that are sprinkled on top of SharePoint, making your experience even better. Check out our site below to discover other SharePoint Sprinkles apps, or connect with us on GitHub."
+                }),
+                PropertyPaneLabel('support', {
+                  text: "Are you having a problem or do you have a great idea for this app? Visit our GitHub link below to open an issue and let us know!"
+                }),
+                PropertyPaneHorizontalRule(),
+                PropertyPaneLink('supportLink', {
+                  href: "https://www.spsprinkles.com/",
+                  text: "SharePoint Sprinkles",
+                  target: "_blank"
+                }),
+                PropertyPaneLink('sourceLink', {
+                  href: "https://github.com/spsprinkles/page-hacks/",
+                  text: "View Source on GitHub",
+                  target: "_blank"
+                })
+              ]
+            }
+          ]
         }
       ]
     };
   }
 
+  protected onInit(): Promise<void> {
+    // Set the context
+    ContextInfo.setPageContext(this.context.pageContext);
+
+    // Return a promise
+    return Promise.resolve();
+  }
+
+  protected onPropertyPaneRendered(): void {
+    const setLogo = setInterval(() => {
+      let closeBtn = document.querySelectorAll("div.spPropertyPaneContainer div[aria-label='Page Hacks property pane'] button[data-automation-id='propertyPaneClose']");
+      if (closeBtn) {
+        closeBtn.forEach((el: HTMLElement) => {
+          let parent = el.parentElement;
+          if (parent && !(parent.firstChild as HTMLElement).classList.contains("logo")) { parent.prepend(common.getLogo(28, 28, 'logo me-2')) }
+        });
+        clearInterval(setLogo);
+      }
+    }, 50);
+  }
+
+  // Updates the extra padding on the page
+  private updatePadding(hidePadding: boolean): void {
+    const setPadding = setInterval(() => {
+      // Get the canvas control elements
+      let elCanvasControl = document.querySelectorAll("div[data-automation-id='CanvasControl']");
+      if (elCanvasControl) {
+        elCanvasControl.forEach((el: HTMLElement) => {
+          // Set or clear margin
+          hidePadding ? el.style.margin = "0" : el.style.margin = "";
+          // Set or clear padding
+          hidePadding ? el.style.padding = "0" : el.style.padding = "";
+        });
+        clearInterval(setPadding);
+      }
+    }, 50);
+  }
+
+  // Updates the page header visibility
+  private updatePageHeader(hideHeader: boolean): void {
+    const setPageHeader = setInterval(() => {
+      // Get the header element
+      let elHeader: HTMLElement = document.querySelector("div[data-automation-id='pageHeader']");
+      if (elHeader) {
+        // Update the header visibility
+        elHeader.style.display = hideHeader ? "none" : "";
+        clearInterval(setPageHeader);
+      }
+    }, 50);
+  }
+
   // Updates the page navigation visibility
   private updatePageNavigation(hideNav: boolean): void {
-    // Get the navigation element
-    const elNav: HTMLElement = document.querySelector("#spLeftNav");
-    if (elNav) {
-      // Update the navigation visibility
-      elNav.style.display = hideNav ? "none" : "";
-    }
+    const setPageNav = setInterval(() => {
+      // Get the navigation element
+      let elNav: HTMLElement = document.querySelector("#spLeftNav");
+      if (elNav) {
+        // Update the navigation visibility
+        elNav.style.display = hideNav ? "none" : "";
+        clearInterval(setPageNav);
+      }
+    }, 50);
   }
 
   // Displays the panel to update the page template
@@ -121,7 +215,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
       }).execute(
         // Success
         item => {
-          const pageLayout = (item as any)["PageLayoutType"];
+          let pageLayout = (item as any)["PageLayoutType"];
 
           // Set the header
           Modal.setHeader("Update Page Layout");
@@ -129,7 +223,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
           // See if an item exists
           if (item) {
             // Display a form
-            const form = Components.Form({
+            let form = Components.Form({
               el: Modal.BodyElement,
               controls: [{
                 label: "Select a Layout",
@@ -177,7 +271,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
                 onClick: () => {
                   // Validate the form
                   if (form.isValid()) {
-                    const selectedValue: Components.ICheckboxGroupItem = form.getValues()["PageLayout"];
+                    let selectedValue: Components.ICheckboxGroupItem = form.getValues()["PageLayout"];
 
                     // Update the item
                     item.update({
@@ -189,7 +283,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
                       },
                       () => {
                         // Set the validation
-                        const ctrl = form.getControl("PageLayout");
+                        let ctrl = form.getControl("PageLayout");
                         ctrl.updateValidation(ctrl.el, {
                           invalidMessage: "Error updating the item. Please refresh and try again.",
                           isValid: false
@@ -233,25 +327,18 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
 
   // Updates the page width
   private updatePageWidth(setFullWidth: boolean): void {
-    // Get the canvas zone element
-    const elCanvas = document.querySelector("div[data-automation-id='CanvasZone']");
-    if (elCanvas) {
-      const elCanvasChild = elCanvas.firstChild as HTMLElement;
-
-      // See if we are setting the full width
-      if (setFullWidth) {
-        elCanvas.classList.add("CanvasZone--fullWidth");
-        elCanvas.classList.add("CanvasZone--fullWidth--read");
-
-        // Set the max-width
-        elCanvasChild.style.maxWidth = "none";
-      } else {
-        elCanvas.classList.remove("CanvasZone--fullWidth");
-        elCanvas.classList.remove("CanvasZone--fullWidth--read");
-
-        // Clear the max-width
-        elCanvasChild.style.maxWidth = "";
+    const setPageWidth = setInterval(() => {
+      // Get the canvas zone elements
+      let elCanvasZone = document.querySelectorAll("div[data-automation-id='CanvasZone']");
+      if (elCanvasZone) {
+        elCanvasZone.forEach((el: HTMLElement) => {
+          // Get the first child element
+          let elCanvasChild = el.firstChild as HTMLElement;
+          // Set or clear max width
+          setFullWidth ? elCanvasChild.style.maxWidth = "none" : elCanvasChild.style.maxWidth = "";
+        });
+        clearInterval(setPageWidth);
       }
-    }
+    }, 50);
   }
 }

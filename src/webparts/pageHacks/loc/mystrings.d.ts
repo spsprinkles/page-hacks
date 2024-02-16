@@ -1,10 +1,10 @@
 declare interface IPageHacksWebPartStrings {
   PropertyPaneDescription: string;
-  PageNavigationFieldDescription: string;
+  PageHeaderFieldLabel: string;
   PageNavigationFieldLabel: string;
+  PagePaddingFieldLabel: string;
   PageTypeFieldDescription: string;
   PageTypeFieldLabel: string;
-  PageWidthFieldDescription: string;
   PageWidthFieldLabel: string;
   AppLocalEnvironmentSharePoint: string;
   AppLocalEnvironmentTeams: string;
