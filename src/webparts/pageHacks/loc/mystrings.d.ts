@@ -13,14 +13,13 @@ declare interface IPageHacksWebPartStrings {
   PageHeaderFieldLabel: string;
   PageHeaderFieldOffText: string;
   PageHeaderFieldOnText: string;
+  PageLayoutTypeFieldLabel: string;
   PageNavigationFieldLabel: string;
   PageNavigationFieldOffText: string;
   PageNavigationFieldOnText: string;
   PageSocialFieldLabel: string;
   PageSocialFieldOffText: string;
   PageSocialFieldOnText: string;
-  PageTypeFieldDescription: string;
-  PageTypeFieldLabel: string;
   SettingsGroupName: string;
 }
 

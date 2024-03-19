@@ -14,14 +14,13 @@ define([], function () {
     "PageHeaderFieldLabel": "Page Header",
     "PageHeaderFieldOffText": "Show Page Header",
     "PageHeaderFieldOnText": "Hide Page Header",
+    "PageLayoutTypeFieldLabel": "Page Layout Type",
     "PageNavigationFieldLabel": "Page Navigation",
     "PageNavigationFieldOffText": "Show Page Navigation",
     "PageNavigationFieldOnText": "Hide Page Navigation",
     "PageSocialFieldLabel": "Social Footer",
     "PageSocialFieldOffText": "Show Social Footer",
     "PageSocialFieldOnText": "Hide Social Footer",
-    "PageTypeFieldDescription": "This will allow you to change the page layout type.",
-    "PageTypeFieldLabel": "Page Template",
     "SettingsGroupName": "Settings:"
   }
 });

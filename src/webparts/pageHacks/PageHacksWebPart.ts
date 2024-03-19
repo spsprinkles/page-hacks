@@ -1,5 +1,5 @@
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
-import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneHorizontalRule, PropertyPaneLink, PropertyPaneLabel, PropertyPaneToggle } from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneDropdown, PropertyPaneHorizontalRule, PropertyPaneLink, PropertyPaneLabel, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as common from './common';
 import * as strings from 'PageHacksWebPartStrings';
@@ -15,9 +15,11 @@ export interface IPageHacksWebPartProps {
   hidePadding: boolean;
   hideSocial: boolean;
   isFullWidth: boolean;
+  pageLayoutType: string;
 }
 
 export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWebPartProps> {
+  private _pageLayoutTypeDisabled: boolean = false;
 
   public render(): void {
     // Clear this element
@@ -50,7 +52,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
         btnProps: {
           className: "p-1 pe-2",
           iconType: common.getLogo(24, 24, "me-2"),
-          text: "Settings",
+          text: "Page Hacks",
           type: Components.ButtonTypes.OutlinePrimary,
           onClick: () => {
             // Show the edit panel
@@ -58,13 +60,22 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
           }
         }
       });
+
+      // Get the current pageLayoutType
+      this.getPageLayoutType().then((pageLayoutType) => {
+        // Set the pageLayoutType value
+        this.properties.pageLayoutType = pageLayoutType;
+      }, () => {
+        // Disable the dropdown on error
+        this._pageLayoutTypeDisabled = true;
+      });
     }
   }
 
   protected get dataVersion(): Version {
     return Version.parse(this.context.manifest.version);
   }
-
+  
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
@@ -103,13 +114,14 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
                   offText: strings.PageSocialFieldOffText,
                   onText: strings.PageSocialFieldOnText
                 }),
-                PropertyPaneButton('', {
-                  description: strings.PageTypeFieldDescription,
-                  text: strings.PageTypeFieldLabel,
-                  onClick: () => {
-                    // Show a modal to set the page type
-                    this.updatePageTemplate();
-                  }
+                PropertyPaneDropdown('pageLayoutType', {
+                  disabled: this._pageLayoutTypeDisabled,
+                  label: strings.PageLayoutTypeFieldLabel,
+                  selectedKey: this.properties.pageLayoutType,
+                  options: [
+                    { key: "Article", text: "Article" },
+                    { key: "Home", text: "Home" }
+                  ]
                 })
               ]
             }
@@ -159,6 +171,12 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     return Promise.resolve();
   }
 
+  protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): void {
+    if (propertyPath === "pageLayoutType") {
+      this.updatePageLayoutType(oldValue, newValue);
+    }
+  }
+
   protected onPropertyPaneRendered(): void {
     const setLogo = setInterval(() => {
       let closeBtn = document.querySelectorAll("div.spPropertyPaneContainer div[aria-label='Page Hacks property pane'] button[data-automation-id='propertyPaneClose']");
@@ -179,8 +197,31 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     this.domElement.appendChild(style);
   }
 
-  // Displays the panel to update the page template
-  private updatePageTemplate(): void {
+  // Get the current page layout type
+  private getPageLayoutType(): PromiseLike<string> {
+    // Return a promise
+    return new Promise((resolve, reject) => {
+      // Ensure the page context information exists
+      if (this.context.pageContext.list && this.context.pageContext.listItem) {
+        // Get the page information
+        Web().Lists(this.context.pageContext.list.title).Items(this.context.pageContext.listItem.id).query({
+          Select: ["PageLayoutType"]
+        }).execute(
+          // Success
+          item => {
+            // See if an item exists
+            item ? resolve((item as any)["PageLayoutType"]) : reject;
+          },
+          // Error
+          reject);
+      } else {
+        reject("Unable to get the page information from the context. This is not a modern site page...");
+      }
+    });
+  }
+
+  // Updates the page template
+  private updatePageLayoutType(oldValue: any, newValue: any): void {
     // Display a loading dialog
     LoadingDialog.setHeader("Getting Page Information");
     LoadingDialog.setBody("This will close after the page information is loaded...");
@@ -197,94 +238,39 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
       }).execute(
         // Success
         item => {
-          let pageLayout = (item as any)["PageLayoutType"];
+          let pageLayoutType = (item as any)["PageLayoutType"];
 
           // Set the header
           Modal.setHeader("Update Page Layout");
 
           // See if an item exists
           if (item) {
-            // Display a form
-            let form = Components.Form({
-              el: Modal.BodyElement,
-              controls: [{
-                label: "Select a Layout",
-                name: "PageLayout",
-                description: "Select a page layout",
-                type: Components.FormControlTypes.Switch,
-                value: pageLayout,
-                required: true,
-                items: [
-                  {
-                    label: "Article"
-                  },
-                  {
-                    label: "Home"
-                  }
-                ],
-                onValidate: (ctrl, results) => {
-                  // Ensure a value exists
-                  if (results.value) {
-                    // See if this layout is already set
-                    if ((results.value as Components.ICheckboxGroupItem).label === pageLayout) {
-                      // Set the flag
-                      results.isValid = false;
-                      results.invalidMessage = "The page is already set to this layout, please select a different layout."
-                    }
-                  } else {
-                    // Set the flag
-                    results.isValid = false;
-                    results.invalidMessage = "Please select a page layout type."
-                  }
-
-                  // Return the results
-                  return results;
+            if (pageLayoutType === oldValue) {
+              // Update the item
+              item.update({
+                PageLayoutType: newValue
+              }).execute(
+                () => {
+                  // Refresh the page
+                  location.reload();
+                },
+                () => {
+                  // Error
+                  Modal.setBody("Unable to save the new PageLayoutType to this page.");
                 }
-              } as Components.IFormControlPropsSwitch]
-            });
-
-            // Set the footer
-            Components.Tooltip({
-              el: Modal.FooterElement,
-              content: "Click to update the page template.",
-              btnProps: {
-                text: "Update",
-                type: Components.ButtonTypes.OutlinePrimary,
-                onClick: () => {
-                  // Validate the form
-                  if (form.isValid()) {
-                    let selectedValue: Components.ICheckboxGroupItem = form.getValues()["PageLayout"];
-
-                    // Update the item
-                    item.update({
-                      PageLayoutType: selectedValue.label
-                    }).execute(
-                      () => {
-                        // Refresh the page
-                        location.reload();
-                      },
-                      () => {
-                        // Set the validation
-                        let ctrl = form.getControl("PageLayout");
-                        ctrl.updateValidation(ctrl.el, {
-                          invalidMessage: "Error updating the item. Please refresh and try again.",
-                          isValid: false
-                        });
-                      }
-                    );
-                  }
-                }
-              }
-            })
+              );
+            } else {
+              Modal.setBody("The PageLayoutType does not need to be updated on this page.");
+            }
           } else {
-            Modal.setBody("Unable to get the item for this page.");
+            Modal.setBody("Unable to get the information needed from this page.");
           }
-
-          // Display a modal
-          Modal.show();
 
           // Hide the dialog
           LoadingDialog.hide();
+
+          // Display a modal
+          Modal.show();
         },
         // Error
         () => {
