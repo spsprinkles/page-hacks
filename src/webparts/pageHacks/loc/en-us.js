@@ -1,19 +1,27 @@
 define([], function () {
   return {
+    "AboutGroupName": "About this app:",
+    "CanvasMarginFieldLabel": "Canvas Control Margin",
+    "CanvasMarginFieldOffText": "Standard Margin",
+    "CanvasMarginFieldOnText": "Hide Margin",
+    "CanvasPaddingFieldLabel": "Canvas Control Padding",
+    "CanvasPaddingFieldOffText": "Standard Padding",
+    "CanvasPaddingFieldOnText": "Hide Padding",
+    "CanvasWidthFieldLabel": "Canvas Zone Width",
+    "CanvasWidthFieldOffText": "Standard Width",
+    "CanvasWidthFieldOnText": "Full Page Width",
     "PropertyPaneDescription": "Select the options below to modify the page.",
     "PageHeaderFieldLabel": "Page Header",
+    "PageHeaderFieldOffText": "Show Page Header",
+    "PageHeaderFieldOnText": "Hide Page Header",
     "PageNavigationFieldLabel": "Page Navigation",
-    "PagePaddingFieldLabel": "Canvas Control Padding",
+    "PageNavigationFieldOffText": "Show Page Navigation",
+    "PageNavigationFieldOnText": "Hide Page Navigation",
+    "PageSocialFieldLabel": "Social Footer",
+    "PageSocialFieldOffText": "Show Social Footer",
+    "PageSocialFieldOnText": "Hide Social Footer",
     "PageTypeFieldDescription": "This will allow you to change the page layout type.",
     "PageTypeFieldLabel": "Page Template",
-    "PageWidthFieldLabel": "Canvas Zone Width",
-    "AppLocalEnvironmentSharePoint": "The app is running on your local environment as SharePoint web part",
-    "AppLocalEnvironmentTeams": "The app is running on your local environment as Microsoft Teams app",
-    "AppLocalEnvironmentOffice": "The app is running on your local environment in office.com",
-    "AppLocalEnvironmentOutlook": "The app is running on your local environment in Outlook",
-    "AppSharePointEnvironment": "The app is running on SharePoint page",
-    "AppTeamsTabEnvironment": "The app is running in Microsoft Teams",
-    "AppOfficeEnvironment": "The app is running in office.com",
-    "AppOutlookEnvironment": "The app is running in Outlook"
+    "SettingsGroupName": "Settings:"
   }
 });

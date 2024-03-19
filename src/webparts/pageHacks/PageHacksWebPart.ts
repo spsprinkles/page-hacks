@@ -10,47 +10,55 @@ import { Components, ContextInfo, Web } from "gd-sprest-bs";
 
 export interface IPageHacksWebPartProps {
   hideHeader: boolean;
+  hideMargin: boolean;
   hideNav: boolean;
   hidePadding: boolean;
+  hideSocial: boolean;
   isFullWidth: boolean;
 }
 
 export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWebPartProps> {
 
   public render(): void {
-    // Update the page header
-    this.updatePageHeader(this.properties.hideHeader);
-
-    // Update the page navigation
-    this.updatePageNavigation(this.properties.hideNav);
-
-    // Update the page padding
-    this.updatePadding(this.properties.hidePadding);
-
-    // Update the page width
-    this.updatePageWidth(this.properties.isFullWidth);
-
-    // Do nothing if we are in display mode
-    if (this.displayMode === DisplayMode.Read) { return; }
-
     // Clear this element
     while (this.domElement.firstChild) { this.domElement.removeChild(this.domElement.firstChild); }
 
-    // Display a button to configure the page
-    Components.Tooltip({
-      el: this.domElement,
-      content: "Configure Settings",
-      btnProps: {
-        className: "p-1 pe-2",
-        iconType: common.getLogo(24, 24, "me-2"),
-        text: "Settings",
-        type: Components.ButtonTypes.OutlinePrimary,
-        onClick: () => {
-          // Show the edit panel
-          this.context.propertyPane.open();
+    // Update the canvas padding
+    this.properties.hideMargin ? this.generateStyle(`div[data-automation-id='CanvasControl'] { margin: 0 !important; }`) : null;
+
+    // Update the canvas padding
+    this.properties.hidePadding ? this.generateStyle(`div[data-automation-id='CanvasControl'] { padding: 0 !important; }`) : null;
+
+    // Update the canvas width
+    this.properties.isFullWidth ? this.generateStyle(`div[data-automation-id='CanvasZone'] > div:first-child { max-width: none !important; }`) : null;
+
+    // Update the page header
+    this.properties.hideHeader ? this.generateStyle(`div[data-automation-id='pageHeader'] { display: none !important; }`) : null;
+
+    // Update the page navigation
+    this.properties.hideNav ? this.generateStyle(`#spLeftNav { display: none !important; }`) : null;
+
+    // Update the page social footer
+    this.properties.hideSocial ? this.generateStyle(`#CommentsWrapper { display: none !important; }`) : null;
+
+    // Render the button if we are in edit mode
+    if (this.displayMode === DisplayMode.Edit) {
+      // Display a button to configure the page
+      Components.Tooltip({
+        el: this.domElement,
+        content: "Configure Settings",
+        btnProps: {
+          className: "p-1 pe-2",
+          iconType: common.getLogo(24, 24, "me-2"),
+          text: "Settings",
+          type: Components.ButtonTypes.OutlinePrimary,
+          onClick: () => {
+            // Show the edit panel
+            this.context.propertyPane.open();
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   protected get dataVersion(): Version {
@@ -63,27 +71,37 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
         {
           groups: [
             {
-              groupName: "Settings:",
+              groupName: strings.SettingsGroupName,
               groupFields: [
+                PropertyPaneToggle('hideMargin', {
+                  label: strings.CanvasMarginFieldLabel,
+                  offText: strings.CanvasMarginFieldOffText,
+                  onText: strings.CanvasMarginFieldOnText
+                }),
                 PropertyPaneToggle('hidePadding', {
-                  label: strings.PagePaddingFieldLabel,
-                  offText: "Standard Padding",
-                  onText: "Hide Padding"
+                  label: strings.CanvasPaddingFieldLabel,
+                  offText: strings.CanvasPaddingFieldOffText,
+                  onText: strings.CanvasPaddingFieldOnText
                 }),
                 PropertyPaneToggle('isFullWidth', {
-                  label: strings.PageWidthFieldLabel,
-                  offText: "Standard Width",
-                  onText: "Full Page Width"
+                  label: strings.CanvasWidthFieldLabel,
+                  offText: strings.CanvasWidthFieldOffText,
+                  onText: strings.CanvasWidthFieldOnText
                 }),
                 PropertyPaneToggle('hideHeader', {
                   label: strings.PageHeaderFieldLabel,
-                  offText: "Show Page Header",
-                  onText: "Hide Page Header"
+                  offText: strings.PageHeaderFieldOffText,
+                  onText: strings.PageHeaderFieldOnText
                 }),
                 PropertyPaneToggle('hideNav', {
                   label: strings.PageNavigationFieldLabel,
-                  offText: "Show Page Navigation",
-                  onText: "Hide Page Navigation"
+                  offText: strings.PageNavigationFieldOffText,
+                  onText: strings.PageNavigationFieldOnText
+                }),
+                PropertyPaneToggle('hideSocial', {
+                  label: strings.PageSocialFieldLabel,
+                  offText: strings.PageSocialFieldOffText,
+                  onText: strings.PageSocialFieldOnText
                 }),
                 PropertyPaneButton('', {
                   description: strings.PageTypeFieldDescription,
@@ -100,7 +118,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
         {
           groups: [
             {
-              groupName: "About this app:",
+              groupName: strings.AboutGroupName,
               groupFields: [
                 PropertyPaneLabel('version', {
                   text: "Version: " + this.context.manifest.version
@@ -154,47 +172,11 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     }, 50);
   }
 
-  // Updates the extra padding on the page
-  private updatePadding(hidePadding: boolean): void {
-    const setPadding = setInterval(() => {
-      // Get the canvas control elements
-      let elCanvasControl = document.querySelectorAll("div[data-automation-id='CanvasControl']");
-      if (elCanvasControl) {
-        elCanvasControl.forEach((el: HTMLElement) => {
-          // Set or clear margin
-          hidePadding ? el.style.margin = "0" : el.style.margin = "";
-          // Set or clear padding
-          hidePadding ? el.style.padding = "0" : el.style.padding = "";
-        });
-        clearInterval(setPadding);
-      }
-    }, 50);
-  }
-
-  // Updates the page header visibility
-  private updatePageHeader(hideHeader: boolean): void {
-    const setPageHeader = setInterval(() => {
-      // Get the header element
-      let elHeader: HTMLElement = document.querySelector("div[data-automation-id='pageHeader']");
-      if (elHeader) {
-        // Update the header visibility
-        elHeader.style.display = hideHeader ? "none" : "";
-        clearInterval(setPageHeader);
-      }
-    }, 50);
-  }
-
-  // Updates the page navigation visibility
-  private updatePageNavigation(hideNav: boolean): void {
-    const setPageNav = setInterval(() => {
-      // Get the navigation element
-      let elNav: HTMLElement = document.querySelector("#spLeftNav");
-      if (elNav) {
-        // Update the navigation visibility
-        elNav.style.display = hideNav ? "none" : "";
-        clearInterval(setPageNav);
-      }
-    }, 50);
+  // Generate a style tag
+  private generateStyle(innerHTML: string): void {
+    const style = document.createElement("style");
+    style.innerHTML = innerHTML;
+    this.domElement.appendChild(style);
   }
 
   // Displays the panel to update the page template
@@ -323,22 +305,5 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
       Modal.setBody("Unable to get the page information from the context. This is not a modern site page...");
       Modal.show();
     }
-  }
-
-  // Updates the page width
-  private updatePageWidth(setFullWidth: boolean): void {
-    const setPageWidth = setInterval(() => {
-      // Get the canvas zone elements
-      let elCanvasZone = document.querySelectorAll("div[data-automation-id='CanvasZone']");
-      if (elCanvasZone) {
-        elCanvasZone.forEach((el: HTMLElement) => {
-          // Get the first child element
-          let elCanvasChild = el.firstChild as HTMLElement;
-          // Set or clear max width
-          setFullWidth ? elCanvasChild.style.maxWidth = "none" : elCanvasChild.style.maxWidth = "";
-        });
-        clearInterval(setPageWidth);
-      }
-    }, 50);
   }
 }

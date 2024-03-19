@@ -1,19 +1,27 @@
 declare interface IPageHacksWebPartStrings {
+  AboutGroupName: string;
+  CanvasMarginFieldLabel: string;
+  CanvasMarginFieldOffText: string;
+  CanvasMarginFieldOnText: string;
+  CanvasPaddingFieldLabel: string;
+  CanvasPaddingFieldOffText: string;
+  CanvasPaddingFieldOnText: string;
+  CanvasWidthFieldLabel: string;
+  CanvasWidthFieldOffText: string;
+  CanvasWidthFieldOnText: string;
   PropertyPaneDescription: string;
   PageHeaderFieldLabel: string;
+  PageHeaderFieldOffText: string;
+  PageHeaderFieldOnText: string;
   PageNavigationFieldLabel: string;
-  PagePaddingFieldLabel: string;
+  PageNavigationFieldOffText: string;
+  PageNavigationFieldOnText: string;
+  PageSocialFieldLabel: string;
+  PageSocialFieldOffText: string;
+  PageSocialFieldOnText: string;
   PageTypeFieldDescription: string;
   PageTypeFieldLabel: string;
-  PageWidthFieldLabel: string;
-  AppLocalEnvironmentSharePoint: string;
-  AppLocalEnvironmentTeams: string;
-  AppLocalEnvironmentOffice: string;
-  AppLocalEnvironmentOutlook: string;
-  AppSharePointEnvironment: string;
-  AppTeamsTabEnvironment: string;
-  AppOfficeEnvironment: string;
-  AppOutlookEnvironment: string;
+  SettingsGroupName: string;
 }
 
 declare module 'PageHacksWebPartStrings' {
