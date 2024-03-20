@@ -15,11 +15,11 @@ export interface IPageHacksWebPartProps {
   hidePadding: boolean;
   hideSocial: boolean;
   isFullWidth: boolean;
-  pageLayoutType: string;
 }
 
 export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWebPartProps> {
   private _pageLayoutTypeDisabled: boolean = false;
+  private _pageLayoutType: string;
 
   public render(): void {
     // Clear this element
@@ -64,7 +64,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
       // Get the current pageLayoutType
       this.getPageLayoutType().then((pageLayoutType) => {
         // Set the pageLayoutType value
-        this.properties.pageLayoutType = pageLayoutType;
+        this._pageLayoutType = pageLayoutType;
       }, () => {
         // Disable the dropdown on error
         this._pageLayoutTypeDisabled = true;
@@ -75,7 +75,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
   protected get dataVersion(): Version {
     return Version.parse(this.context.manifest.version);
   }
-  
+
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
@@ -114,10 +114,10 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
                   offText: strings.PageSocialFieldOffText,
                   onText: strings.PageSocialFieldOnText
                 }),
-                PropertyPaneDropdown('pageLayoutType', {
+                PropertyPaneDropdown('', {
                   disabled: this._pageLayoutTypeDisabled,
                   label: strings.PageLayoutTypeFieldLabel,
-                  selectedKey: this.properties.pageLayoutType,
+                  selectedKey: this._pageLayoutType,
                   options: [
                     { key: "Article", text: "Article" },
                     { key: "Home", text: "Home" }
@@ -172,8 +172,8 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
   }
 
   protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): void {
-    if (propertyPath === "pageLayoutType") {
-      this.updatePageLayoutType(oldValue, newValue);
+    if (propertyPath === "") {
+      this.updatePageLayoutType(this._pageLayoutType, newValue);
     }
   }
 
@@ -251,8 +251,8 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
                 PageLayoutType: newValue
               }).execute(
                 () => {
-                  // Refresh the page
-                  location.reload();
+                  // Reload the page
+                  window.location.reload();
                 },
                 () => {
                   // Error
