@@ -18,7 +18,7 @@ export interface IPageHacksWebPartProps {
 }
 
 export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWebPartProps> {
-  private _pageLayoutTypeDisabled: boolean = false;
+  private _pageLayoutTypeDisabled: boolean = true;
   private _pageLayoutType: string;
 
   public render(): void {
@@ -65,6 +65,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
       this.getPageLayoutType().then((pageLayoutType) => {
         // Set the pageLayoutType value
         this._pageLayoutType = pageLayoutType;
+        this._pageLayoutTypeDisabled = false;
       }, () => {
         // Disable the dropdown on error
         this._pageLayoutTypeDisabled = true;
@@ -173,7 +174,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
 
   protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): void {
     if (propertyPath === "") {
-      this.updatePageLayoutType(this._pageLayoutType, newValue);
+      this.updatePageLayoutType(newValue);
     }
   }
 
@@ -221,7 +222,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
   }
 
   // Updates the page template
-  private updatePageLayoutType(oldValue: any, newValue: any): void {
+  private updatePageLayoutType(newValue: any): void {
     // Display a loading dialog
     LoadingDialog.setHeader("Getting Page Information");
     LoadingDialog.setBody("This will close after the page information is loaded...");
@@ -229,6 +230,9 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
 
     // Clear the modal
     Modal.clear();
+
+    // Hide the modal by default
+    let showModal = false;
 
     // Ensure the page context information exists
     if (this.context.pageContext.list && this.context.pageContext.listItem) {
@@ -239,13 +243,14 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
         // Success
         item => {
           let pageLayoutType = (item as any)["PageLayoutType"];
-
+          
           // Set the header
           Modal.setHeader("Update Page Layout");
 
           // See if an item exists
           if (item) {
-            if (pageLayoutType === oldValue) {
+            // If the current page layoutType matches the old value, perform the update using the newValue
+            if (pageLayoutType === this._pageLayoutType) {
               // Update the item
               item.update({
                 PageLayoutType: newValue
@@ -257,20 +262,23 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
                 () => {
                   // Error
                   Modal.setBody("Unable to save the new PageLayoutType to this page.");
+                  showModal = true;
                 }
               );
             } else {
               Modal.setBody("The PageLayoutType does not need to be updated on this page.");
+              showModal = true;
             }
           } else {
             Modal.setBody("Unable to get the information needed from this page.");
+            showModal = true;
           }
 
           // Hide the dialog
           LoadingDialog.hide();
 
           // Display a modal
-          Modal.show();
+          showModal ? Modal.show() : null;
         },
         // Error
         () => {
@@ -280,7 +288,8 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
           // Display an error message
           Modal.setHeader("Error");
           Modal.setBody("There was an error getting the page information...");
-          Modal.show();
+          showModal = true;
+          showModal ? Modal.show() : null;
         });
     } else {
       // Unable to determine the page information
@@ -289,7 +298,8 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
       // Display an error message
       Modal.setHeader("Error");
       Modal.setBody("Unable to get the page information from the context. This is not a modern site page...");
-      Modal.show();
+      showModal = true;
+      showModal? Modal.show() : null;
     }
   }
 }
