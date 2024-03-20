@@ -20,6 +20,7 @@ While editing the page, click the Pack Hacks button (nothing is rendered in view
 Modify the settings to your liking.
 
 ![image](https://github.com/spsprinkles/page-hacks/assets/24440567/0dc17e1c-64fa-4547-b6d9-3fa7967ae63f)
+![image](https://github.com/spsprinkles/page-hacks/assets/24440567/197f40d9-a3fb-42d1-b977-e318b9bc45ce)
 
 ## Used SharePoint Framework Version
 
