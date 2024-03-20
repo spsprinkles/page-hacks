@@ -7,7 +7,7 @@ Allows you to modify some layout options on a modern page.
 ## Installation
 Download the latest SPFx package from [releases](https://github.com/spsprinkles/page-hacks/releases).
 
-Install and deploy it into your tenant or Site Collection.
+Install and deploy it into your tenant or Site Collection App Catalog.
 
 Add the Page Hacks webpart to a page.
 
