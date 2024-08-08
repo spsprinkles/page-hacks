@@ -12,6 +12,10 @@
     }
   },
   "externals": {
+    "gd-sprest-bs": {
+      "path": "./node_modules/gd-sprest-bs/dist/gd-sprest-bs.min.js",
+      "globalName": "$REST"
+    },
     "jquery": {
       "path": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js",
       "globalName": "jQuery"

@@ -32,7 +32,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     this.properties.hidePadding ? this.generateStyle(`div[data-automation-id='CanvasControl'] { padding: 0 !important; }`) : null;
 
     // Update the canvas width
-    this.properties.isFullWidth ? this.generateStyle(`div[data-automation-id='CanvasZone'] > div:first-child { max-width: none !important; }`) : null;
+    this.properties.isFullWidth ? this.generateStyle(`div[data-automation-id='CanvasZone'] > div[data-automation-id='CanvasZone-SectionContainer'] { max-width: none !important; }`) : null;
 
     // Update the page header
     this.properties.hideHeader ? this.generateStyle(`div[data-automation-id='pageHeader'] { display: none !important; }`) : null;
