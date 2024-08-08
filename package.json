@@ -1,6 +1,6 @@
 {
   "name": "page-hacks",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "engines": {
     "node": ">=18.17.1 <19.0.0"

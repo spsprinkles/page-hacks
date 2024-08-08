@@ -70,6 +70,9 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
         // Disable the dropdown on error
         this._pageLayoutTypeDisabled = true;
       });
+    } else {
+      // Hide this webpart
+      this.hideWebpart();
     }
   }
 
@@ -221,6 +224,19 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     });
   }
 
+  // Hides this webpart
+  private hideWebpart(): void {
+    // Find the parent div element and make it hidden
+    let el = this.domElement.parentElement;
+    while (el && el.getAttribute("data-automation-id") !== "CanvasControl") { el = el.parentElement; }
+
+    // See if the element was found
+    if (el) {
+      // Hide the element
+      el.style.display = "none";
+    }
+  }
+
   // Updates the page template
   private updatePageLayoutType(newValue: any): void {
     // Display a loading dialog
@@ -243,7 +259,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
         // Success
         item => {
           let pageLayoutType = (item as any)["PageLayoutType"];
-          
+
           // Set the header
           Modal.setHeader("Update Page Layout");
 
@@ -299,7 +315,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
       Modal.setHeader("Error");
       Modal.setBody("Unable to get the page information from the context. This is not a modern site page...");
       showModal = true;
-      showModal? Modal.show() : null;
+      showModal ? Modal.show() : null;
     }
   }
 }
