@@ -35,7 +35,7 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     this.properties.isFullWidth ? this.generateStyle(`div[data-automation-id='CanvasZone'] > div[data-automation-id='CanvasZone-SectionContainer'] { max-width: none !important; }`) : null;
 
     // Update the page header
-    this.properties.hideHeader ? this.generateStyle(`div[data-automation-id='pageHeader'] { display: none !important; }`) : null;
+    this.properties.hideHeader ? this.generateStyle(`#spPageCanvasContent div[id*='vpc_WebPart.PageTitle'] { display: none !important; }`) : null;
 
     // Update the page navigation
     this.properties.hideNav ? this.generateStyle(`#spLeftNav { display: none !important; }`) : null;
