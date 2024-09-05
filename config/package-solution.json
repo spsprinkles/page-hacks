@@ -3,7 +3,7 @@
   "solution": {
     "name": "Page Hacks",
     "id": "58b60525-c421-4b43-aefa-db7d7b93e509",
-    "version": "0.0.6.0",
+    "version": "0.0.6.1",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
