@@ -32,7 +32,10 @@ export default class PageHacksWebPart extends BaseClientSideWebPart<IPageHacksWe
     this.properties.hidePadding ? this.generateStyle(`div[data-automation-id='CanvasControl'] { padding: 0 !important; }`) : null;
 
     // Update the canvas width
-    this.properties.isFullWidth ? this.generateStyle(`div[data-automation-id='CanvasZone'] > div[data-automation-id='CanvasZone-SectionContainer'] { max-width: none !important; }`) : null;
+    if (this.properties.isFullWidth) {
+      this.generateStyle(`div[data-automation-id='CanvasZone'] > div[data-automation-id='CanvasZone-SectionContainer'] { max-width: none !important; }`);
+      this.generateStyle(`div[data-automation-id='CanvasZone'] > div[data-automation-id='CanvasZone-SectionContainer'] div[data-automation-id='CollapsibleLayer-Content'] { max-width: none !important; }`);
+    }
 
     // Update the page header
     this.properties.hideHeader ? this.generateStyle(`div.SPCanvas div[id*='vpc_WebPart.PageTitle'] { display: none !important; }`) : null;
